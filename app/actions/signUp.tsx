@@ -1,7 +1,5 @@
 "use server"
 
-import { log } from "console";
-
 export const signUp = async (email: string, password: string, userName: string) => {
     const res = await fetch(`http://localhost:5000/addUser`, {
         method : "POST",
@@ -10,7 +8,8 @@ export const signUp = async (email: string, password: string, userName: string) 
         },
         body : JSON.stringify({email,password,userName})
     }) 
-    const {message} = await res.json(); 
+    const data = await res.json();
 
-    return message
+
+    return data
 }

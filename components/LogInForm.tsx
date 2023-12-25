@@ -1,31 +1,32 @@
 "use client"
 
-import { signUp } from "@/app/actions/signUp"
+import { logIn } from "@/app/actions/logIn"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
-export default function SignUpForm() {
+export default function LogInForm() {
     const router = useRouter()
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [userName, setUserName] = useState('')
 
     const [ message, setMessage] = useState('')
 
     const handleSubmit = async () => {
-        if(userName === '' || password === '' || email === '') {
+        if(password === '' || email === '') {
             setMessage("Empty field exists")
         }
         else {
-            setMessage("Signing up...")
-            const {message,accessToken} = await signUp(email,password,userName)
-            setMessage(message)
-            if(accessToken){
+            setMessage("Logging In...")
+            const {message,result,accessToken} = await logIn(email,password)
+            if(result){
                 localStorage.setItem("accessToken",accessToken)
-                router.refresh()
                 router.push('/')
+                setMessage(message)
+            } 
+            else {
+                setMessage(message)
             }
             
         }
@@ -33,8 +34,6 @@ export default function SignUpForm() {
     }
   return (
     <div className="flex flex-col gap-4 p-4 w-1/2 mx-auto">
-        <label htmlFor="Name">User Name :</label>
-        <input required className="text-black" type="text" value={userName} onChange={(e)=> setUserName(e.target.value)} />
         <label htmlFor="Email">Email :</label>
         <input required className="text-black" type="email" value={email} onChange={(e)=> setEmail(e.target.value)} />
         <label htmlFor="Password">Password :</label>
@@ -43,10 +42,10 @@ export default function SignUpForm() {
             {message}
         </p>
         <button className="rounder-lg border-blue-500 border-b-2 w-1/4 p-4 mx-auto hover:text-blue-400" onClick={handleSubmit}>
-            Sign Up
+           Log In
         </button>
 
-        <p>Already have and account ? <Link href='/login' className="text-blue-400 hover:font-bold">Go to Login</Link></p>
+        <p>Don't have an Account ? <Link href='/signup' className="text-blue-400 hover:font-bold">Go to Sign Up</Link></p>
 
         
       
