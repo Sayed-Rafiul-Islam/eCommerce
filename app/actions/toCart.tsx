@@ -1,12 +1,12 @@
 "use server"
 
 export const toCart = async (productId: number, accessToken: string | null) => {
-    const res = await fetch(`http://localhost:5000/addToCart`, {
+    const res = await fetch(`http://localhost:5000/addToCart?accessToken=${accessToken}`, {
         method : "POST",
         headers : {
             "Content-type" : "application/json"
         },
-        body : JSON.stringify({productId,accessToken}),
+        body : JSON.stringify({productId}),
         cache : "no-store"
     }) 
 
