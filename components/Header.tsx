@@ -1,12 +1,10 @@
 "use client"
 
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 export default function Navbar() {
-    const router = useRouter()
-    const [user,setUser]= useState<Boolean>()
+    const [user,setUser]= useState<Boolean>(false)
     useEffect(() => {
       const user = localStorage.getItem("accessToken") ? true : false
       setUser(user)
@@ -16,7 +14,6 @@ export default function Navbar() {
     const handleLogout = () => {
       localStorage.removeItem("accessToken")
       setUser(false)
-      router.refresh()
     }
 
 

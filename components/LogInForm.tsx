@@ -20,7 +20,6 @@ export default function LogInForm() {
         else {
             setMessage("Logging In...")
             const {message,result,accessToken} = await logIn(email,password)
-            console.log(accessToken)
             if(result){
                 localStorage.setItem("accessToken",accessToken)
                 router.push('/')
@@ -30,7 +29,6 @@ export default function LogInForm() {
             }
             
         }
-        
     }
   return (
     <div className="flex flex-col gap-4 p-4 w-1/2 mx-auto">
