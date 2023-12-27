@@ -1,4 +1,6 @@
 "use client"
+import { toCart } from "@/app/actions/toCart";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
 
 interface Product {
@@ -13,6 +15,7 @@ export default  function Products() {
     const [pageCount, setPageCount] = useState(0);
     const [page, setPage] = useState(0);
     const pages = Array.from(Array(pageCount).keys())
+    const router = useRouter()
 
 
     //  page count
@@ -39,8 +42,24 @@ export default  function Products() {
     
    
 
-    const addToCart = (id : number) => {
-        console.log(id)
+    const addToCart = async (productId : number) => {
+
+        const accessToken : string | null = localStorage.getItem("accessToken")
+
+        const status : number = await toCart(productId,accessToken);
+        console.log(status)
+
+        if( status === 401) {
+            alert('Unauthorized Access. Please Sign in')
+            
+        }
+        else if ( status === 403) {
+            alert('Session expired. Please re-loggin')
+            router.push('/login')
+        }
+        else {
+            alert("Item added to Cart")
+        }       
     }
   return (
     <div>

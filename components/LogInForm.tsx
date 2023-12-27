@@ -20,10 +20,10 @@ export default function LogInForm() {
         else {
             setMessage("Logging In...")
             const {message,result,accessToken} = await logIn(email,password)
+            console.log(accessToken)
             if(result){
                 localStorage.setItem("accessToken",accessToken)
                 router.push('/')
-                setMessage(message)
             } 
             else {
                 setMessage(message)
