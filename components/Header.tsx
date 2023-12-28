@@ -16,8 +16,6 @@ export default function Navbar() {
       setUser(false)
     }
 
-
-  
   return (
     <div className='mt-5'>
       <ul className='w-1/2 text-center mx-auto'>
