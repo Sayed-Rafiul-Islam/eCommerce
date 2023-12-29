@@ -6,7 +6,8 @@ export const signUp = async (email: string, password: string, userName: string) 
         headers : {
             "Content-type" : "application/json"
         },
-        body : JSON.stringify({email,password,userName})
+        body : JSON.stringify({email,password,userName}),
+        cache : "no-store"
     }) 
     const data = await res.json();
 

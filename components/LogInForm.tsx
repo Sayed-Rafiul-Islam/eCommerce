@@ -1,12 +1,11 @@
 "use client"
-
-import { logIn } from "@/app/actions/logIn"
+import { UserAuth } from "@/app/context/AuthContext"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 export default function LogInForm() {
-    const router = useRouter()
+    const {login} = UserAuth()
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -19,16 +18,10 @@ export default function LogInForm() {
         }
         else {
             setMessage("Logging In...")
-            const {message,result,accessToken} = await logIn(email,password)
-            if(result){
-                localStorage.setItem("accessToken",accessToken)
-                router.push('/')
-            } 
-            else {
-                setMessage(message)
-            }
-            
+            const message = await login(email,password)
+            setMessage(message)            
         }
+        
     }
   return (
     <div className="flex flex-col gap-4 p-4 w-1/2 mx-auto">

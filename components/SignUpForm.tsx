@@ -1,12 +1,11 @@
 "use client"
-
-import { signUp } from "@/app/actions/signUp"
+import { UserAuth } from "@/app/context/AuthContext"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 export default function SignUpForm() {
-    const router = useRouter()
+    const {signup} = UserAuth()
+
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -18,15 +17,12 @@ export default function SignUpForm() {
         if(userName === '' || password === '' || email === '') {
             setMessage("Empty field exists")
         }
+
         else {
             setMessage("Signing up...")
-            const {message,accessToken} = await signUp(email,password,userName)
+            const message = await signup(email,password,userName)
             setMessage(message)
-            if(accessToken){
-                localStorage.setItem("accessToken",accessToken)
-                router.refresh()
-                router.push('/')
-            }
+           
             
         }
         

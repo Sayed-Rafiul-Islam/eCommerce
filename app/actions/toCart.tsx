@@ -1,6 +1,7 @@
 "use server"
 
 export const toCart = async (productId: number, accessToken: string | null) => {
+   if(accessToken){
     const res = await fetch(`http://localhost:5000/addToCart?accessToken=${accessToken}`, {
         method : "POST",
         headers : {
@@ -11,4 +12,7 @@ export const toCart = async (productId: number, accessToken: string | null) => {
     }) 
 
     return res.status
+   } else {
+    return 401
+   }
 }

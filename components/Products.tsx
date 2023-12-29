@@ -40,17 +40,15 @@ export default  function Products() {
 
 
     
-   
 
     const addToCart = async (productId : number) => {
 
         const accessToken : string | null = localStorage.getItem("accessToken")
 
         const status : number = await toCart(productId,accessToken);
-        console.log(status)
-
         if( status === 401) {
-            alert('Unauthorized Access. Please Sign in')
+            alert('Unauthorized Access. Please log in')
+            router.push('/login')
             
         }
         else if ( status === 403) {
