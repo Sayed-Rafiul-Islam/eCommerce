@@ -1,6 +1,4 @@
 "use client"
-import { toCart } from "@/app/actions/toCart";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
 
 interface Product {
@@ -10,12 +8,19 @@ interface Product {
     price : number,
     image : string
 }
+interface CartItem {
+    productId : number,
+    image : string,
+    price : number,
+    quantity : number
+}
 export default  function Products() {
+    const [cart,setCart] = useState<CartItem[] | []>([]) 
+    const [cartUpdate, setCartUpdate] = useState(false);
     const [products, setProducts] = useState<Product[] | []>([]);
     const [pageCount, setPageCount] = useState(0);
     const [page, setPage] = useState(0);
     const pages = Array.from(Array(pageCount).keys())
-    const router = useRouter()
 
 
     //  page count
@@ -38,38 +43,67 @@ export default  function Products() {
         getProducts();
     },[page])
 
+    // cart
+    useEffect(()=>{
+        const oldCart = localStorage.getItem("cart")
+        
+            if (cart.length === 0) {
+                if(oldCart) {    
+                    setCart(JSON.parse(oldCart))
+                } 
+            } else {
+                localStorage.setItem("cart",JSON.stringify(cart))
+            }
+    },[cartUpdate])
+
 
     
+    
+    const addToCart = async (productId : number,image : string, price : number) => {
+        alert("Item added to cart")
+            const index = cart.findIndex((item)=> item.productId === productId)
+            if(index === -1) {
+                setCart(
+                    [...cart,
+                        { productId: productId, image : image, price : price, quantity: 1 }
+                    ]
+                    );
+            } else {
+                cart[index].quantity += 1;
+            }
+        setCartUpdate(!cartUpdate)
 
-    const addToCart = async (productId : number) => {
+        
 
-        const accessToken : string | null = localStorage.getItem("accessToken")
+        
 
-        const status : number = await toCart(productId,accessToken);
-        if( status === 401) {
-            alert('Unauthorized Access. Please log in')
-            router.push('/login')
+        // const accessToken : string | null = localStorage.getItem("accessToken")
+
+        // const status : number = await toCart(productId,accessToken);
+        // if( status === 401) {
+        //     alert('Unauthorized Access. Please log in')
+        //     router.push('/login')
             
-        }
-        else if ( status === 403) {
-            alert('Session expired. Please re-loggin')
-            router.push('/login')
-        }
-        else {
-            alert("Item added to Cart")
-        }       
+        // }
+        // else if ( status === 403) {
+        //     alert('Session expired. Please re-loggin')
+        //     router.push('/login')
+        // }
+        // else {
+        //     alert("Item added to Cart")
+        // }       
     }
   return (
     <div>
         <div className="grid grid-cols-3">
         {   products.length !== 0 &&
-            products.map((product : Product) =>
-                <div className="mx-auto my-4" key={product.productId}>
-                    <img height={200} width={200} src={product.image} alt="" />
-                    <h2 className="text-lg font-bold">{product.productName}</h2>
-                    <p className="text-xs text-gray-400">Category : {product.category}</p>
-                    <p className="text-teal-300 text-sm">Price : ${product.price}</p>
-                    <button className="text-sm text-teal-500 border-teal-500 border-2 p-2 rounded-lg mt-3 hover:bg-teal-500 hover:text-white transition-colors" onClick={()=>addToCart(product.productId)}>Add to Cart</button>
+            products.map(({productId,productName,image,category,price} : Product) =>
+                <div className="mx-auto my-4" key={productId}>
+                    <img height={200} width={200} src={image} alt="" />
+                    <h2 className="text-lg font-bold">{productName}</h2>
+                    <p className="text-xs text-gray-400">Category : {category}</p>
+                    <p className="text-teal-300 text-sm">Price : ${price}</p>
+                    <button className="text-sm text-teal-500 border-teal-500 border-2 p-2 rounded-lg mt-3 hover:bg-teal-500 hover:text-white transition-colors" onClick={()=>addToCart(productId,image,price)}>Add to Cart</button>
                 </div>
             )
         } 
