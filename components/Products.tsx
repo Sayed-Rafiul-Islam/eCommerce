@@ -1,4 +1,5 @@
 "use client"
+import { UserAuth } from "@/app/context/AuthContext"
 import { useEffect, useState } from "react"
 
 interface Product {
@@ -10,11 +11,13 @@ interface Product {
 }
 interface CartItem {
     productId : number,
+    productName : string,
     image : string,
     price : number,
     quantity : number
 }
 export default  function Products() {
+    const {setCartItemNumber}= UserAuth()
     const [cart,setCart] = useState<CartItem[] | []>([]) 
     const [cartUpdate, setCartUpdate] = useState(false);
     const [products, setProducts] = useState<Product[] | []>([]);
@@ -54,18 +57,19 @@ export default  function Products() {
             } else {
                 localStorage.setItem("cart",JSON.stringify(cart))
             }
+            setCartItemNumber(cart.length)
     },[cartUpdate])
 
 
     
     
-    const addToCart = async (productId : number,image : string, price : number) => {
+    const addToCart = async (productId : number,image : string, price : number,productName : string) => {
         alert("Item added to cart")
             const index = cart.findIndex((item)=> item.productId === productId)
             if(index === -1) {
                 setCart(
                     [...cart,
-                        { productId: productId, image : image, price : price, quantity: 1 }
+                        { productId: productId,productName : productName, image : image, price : price, quantity: 1 }
                     ]
                     );
             } else {
@@ -103,7 +107,7 @@ export default  function Products() {
                     <h2 className="text-lg font-bold">{productName}</h2>
                     <p className="text-xs text-gray-400">Category : {category}</p>
                     <p className="text-teal-300 text-sm">Price : ${price}</p>
-                    <button className="text-sm text-teal-500 border-teal-500 border-2 p-2 rounded-lg mt-3 hover:bg-teal-500 hover:text-white transition-colors" onClick={()=>addToCart(productId,image,price)}>Add to Cart</button>
+                    <button className="text-sm text-teal-500 border-teal-500 border-2 p-2 rounded-lg mt-3 hover:bg-teal-500 hover:text-white transition-colors" onClick={()=>addToCart(productId,image,price,productName)}>Add to Cart</button>
                 </div>
             )
         } 

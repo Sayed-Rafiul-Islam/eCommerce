@@ -9,6 +9,9 @@ const AuthContext = createContext()
 export const AuthContextProvider = ({children}) => {
     const router = useRouter()
     const [user,setUser] = useState(null)
+    const [cartItemNumber,setCartItemNumber] = useState(0)
+
+    // sign up 
     const signup  = async (email,password,userName) => {
         const {message,accessToken} = await signUp(email,password,userName)
         if(accessToken){
@@ -39,9 +42,7 @@ export const AuthContextProvider = ({children}) => {
     const logout = () => {
         localStorage.removeItem("accessToken")
         setUser(false)
-        // toast.error(`${user.displayName} signed out`)
-        // signOut(auth)   
-        // localStorage.removeItem("email");
+        router.push('/')
     }
 
     // useEffect(()=>{
@@ -65,7 +66,7 @@ export const AuthContextProvider = ({children}) => {
     // },[user])
 
     return  (
-    <AuthContext.Provider value={{user,login,logout,signup}}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{user,login,logout,signup,setCartItemNumber,cartItemNumber}}>{children}</AuthContext.Provider>
     )
 }
 

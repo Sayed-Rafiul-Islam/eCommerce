@@ -4,7 +4,7 @@ import { UserAuth } from '@/app/context/AuthContext'
 import Link from 'next/link'
 
 export default function Navbar() { 
-    const {user,logout} = UserAuth()
+    const {user,logout,cartItemNumber} = UserAuth()
   return (
     <div className='mt-5'>
       <ul className='w-1/2 text-center mx-auto'>
@@ -17,7 +17,12 @@ export default function Navbar() {
           </>
           : 
           <>
-          <Link prefetch className='mx-5' href='/cart'>Cart</Link>
+          {
+            cartItemNumber === 0 ?
+            <Link prefetch className='mx-5' href='/cart'>Cart</Link>
+            :
+            <Link prefetch className='mx-5 text-orange-500' href='/cart'>Cart ({cartItemNumber})</Link>
+          }
           <Link prefetch  className='mx-5' href='/login'>Log In</Link>
           </>
           

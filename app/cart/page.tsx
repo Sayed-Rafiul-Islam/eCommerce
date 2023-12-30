@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { UserAuth } from "../context/AuthContext"
 
 interface Cart {
   productId : number,
@@ -22,6 +23,8 @@ export default function Cart() {
   const [cartItems,setCartItems] = useState<Cart[] | []>([])
   const [updateCart,setUpdateCart] = useState(false)
   let [cost,setCost] = useState(0)
+  const {setCartItemNumber,user} = UserAuth()
+  const router = useRouter()
 
   useEffect(()=>{
     const isCart = localStorage.getItem("cart")
@@ -30,6 +33,7 @@ export default function Cart() {
         cartItems.map(({price,quantity} : Order)  =>{
           cost = cost + price*quantity
           setCost(cost)
+          setCartItemNumber(cartItems.length)
         })
       }
   },[cartItems.length,updateCart])  
@@ -60,6 +64,7 @@ export default function Cart() {
     localStorage.removeItem("cart")
     setCartItems([])
     setCost(0)
+    setCartItemNumber(0)
   }
 
   const updateItem = (id : number, data : boolean) => {
@@ -83,7 +88,14 @@ export default function Cart() {
   }
 
   const handleCheckOut = () => {
-    console.log(" Check out")
+    if(!user) {
+      router.push('/login')
+    } else {
+      console.log(cartItems)
+      alert("functions of payment and stuff")
+      
+    }
+    
   }
 
   return (
@@ -108,20 +120,23 @@ export default function Cart() {
             <tbody className="text-center">
               {
                 cartItems.length > 0 && 
-                cartItems.map(({productId,productName,image,price,quantity},index)=>
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{productName}</td>
-                      <td><img className="rounded-full mx-auto" height={80} width={80} src={image} alt="" /></td>
-                      <td>${price}</td>
-                      <td>
-                        <button onClick={()=>updateItem(productId,true)} className="text-2xl mr-2 hover:text-green-500">+</button> 
-                        {quantity} 
-                        <button onClick={()=>updateItem(productId,false)} className="text-2xl ml-2 hover:text-red-500">-</button>
-                      </td>
-                      <td>${price*quantity}</td>
-                      <td><button onClick={()=>removeItem(productId)} className="text-red-400 hover:text-red-600">Delete</button></td>
-                    </tr>
+                cartItems.map(({productId,productName,image,price,quantity},index)=>{
+                  console.log()
+                  return <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>{productName}</td>
+                  <td><img className="rounded-full mx-auto" height={80} width={80} src={image} alt="" /></td>
+                  <td>${price}</td>
+                  <td>
+                    <button onClick={()=>updateItem(productId,true)} className="text-2xl mr-2 hover:text-green-500">+</button> 
+                    {quantity} 
+                    <button onClick={()=>updateItem(productId,false)} className="text-2xl ml-2 hover:text-red-500">-</button>
+                  </td>
+                  <td>${price*quantity}</td>
+                  <td><button onClick={()=>removeItem(productId)} className="text-red-400 hover:text-red-600">Delete</button></td>
+                </tr>
+                }
+                    
                 )
               }
               </tbody>
@@ -129,10 +144,14 @@ export default function Cart() {
         </div>
         <div className="w-1/3">
           <h3 className="text-center text-xl">Total Cost : ${cost}</h3>
-          <div className="flex justify-evenly mt-10">
+          {
+            cartItems.length > 0 &&
+            <div className="flex justify-evenly mt-10">
             <button className="text-green-400 hover:text-green-600" onClick={handleCheckOut}>Check Out</button>
             <button className="text-red-400 hover:text-red-600" onClick={handleEmptyCart}>Empty Cart</button>
           </div>
+          }
+          
         </div>
       </div>
     </div>
