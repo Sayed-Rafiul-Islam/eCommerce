@@ -1,5 +1,5 @@
 "use client"
-import { useContext, createContext, useState } from "react";
+import { useContext, createContext, useState, useEffect } from "react";
 import { logIn } from "../actions/logIn";
 import { useRouter } from "next/navigation";
 import { signUp } from "../actions/signUp";
@@ -10,6 +10,7 @@ export const AuthContextProvider = ({children}) => {
     const router = useRouter()
     const [user,setUser] = useState(null)
     const [cartItemNumber,setCartItemNumber] = useState(0)
+
 
     // sign up 
     const signup  = async (email,password,userName) => {
@@ -44,26 +45,16 @@ export const AuthContextProvider = ({children}) => {
         setUser(false)
         router.push('/')
     }
+    useEffect(()=> {
+        const isUser = localStorage.getItem("accessToken")
+        const isCart = JSON.parse(localStorage.getItem("cart"))
+        isUser && setUser(true);
+        if (isCart) {
+            setCartItemNumber(isCart.length)
+        }
+    },[])
 
-    // useEffect(()=>{
-    //     const unsubscribe = onAuthStateChange(auth,(currentUser)=> {
-            
-    //         if (user && currentUser) {
-    //             toast.success(`${currentUser?.displayName} signed in successfully`)
-    //             const newUser = {
-    //                 email: currentUser?.email,
-    //                 name : currentUser?.displayName,
-    //                 role : "user"
-    //             }
-    //             localStorage.setItem("email" , newUser.email)
-    //             createUser(newUser)
-    //         }
-           
-    //         setUser(currentUser)            
-    //     })
 
-    //     return () => user && unsubscribe()
-    // },[user])
 
     return  (
     <AuthContext.Provider value={{user,login,logout,signup,setCartItemNumber,cartItemNumber}}>{children}</AuthContext.Provider>

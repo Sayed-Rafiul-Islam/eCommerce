@@ -53,11 +53,13 @@ export default  function Products() {
             if (cart.length === 0) {
                 if(oldCart) {    
                     setCart(JSON.parse(oldCart))
+                    setCartItemNumber(oldCart.length)
                 } 
             } else {
                 localStorage.setItem("cart",JSON.stringify(cart))
+                setCartItemNumber(cart.length)
             }
-            setCartItemNumber(cart.length)
+            
     },[cartUpdate])
 
 

@@ -80,8 +80,9 @@ export default function Cart() {
       router.push('/login')
     } else {
       console.log(cartItems)
+      console.log(cost)
       alert("functions of payment and stuff")
-
+      handleEmptyCart()
     }
     
   }
