@@ -44,19 +44,7 @@ export default function Cart() {
     setCartItems(tempCart)
     localStorage.setItem("cart",JSON.stringify(tempCart))
     alert("Item removed !")
-
-    // const updatedCart = cartItems.splice(index,1)
-    // setCartItems(updatedCart)
-    // localStorage.setItem("cart",JSON.stringify(updatedCart))
-      // const accessToken : string | null = localStorage.getItem("accessToken")
-      // const data = await deleteProduct(productId,accessToken)
-      // if(data === 200) {
-      //   alert("Item Removed")
-      //   setCartItems([])
-      // } else {
-      //   alert("Unable to Remove Item")
-      // }
-      
+    tempCart.length === 0 && setCartItemNumber(0)
   }
 
   const handleEmptyCart = () => {
@@ -93,7 +81,7 @@ export default function Cart() {
     } else {
       console.log(cartItems)
       alert("functions of payment and stuff")
-      
+
     }
     
   }
