@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { UserAuth } from "../context/AuthContext"
+import { handleCheckout } from "../actions/handleCheckout"
+import { useUserAuth } from "../context/AuthContext"
 
 interface Cart {
   productId : number,
@@ -23,7 +24,7 @@ export default function Cart() {
   const [cartItems,setCartItems] = useState<Cart[] | []>([])
   const [updateCart,setUpdateCart] = useState(false)
   let [cost,setCost] = useState(0)
-  const {setCartItemNumber,user} = UserAuth()
+  const {setCartItemNumber,user} = useUserAuth()
   const router = useRouter()
 
   useEffect(()=>{
@@ -55,6 +56,8 @@ export default function Cart() {
     setCartItemNumber(0)
   }
 
+
+
   const updateItem = (id : number, data : boolean) => {
     const index = cartItems.findIndex(({productId})=> productId === id)
     if (data) {
@@ -75,17 +78,40 @@ export default function Cart() {
     
   }
 
-  const handleCheckOut = () => {
+  const handleCheckOut = async () => {
+    const accessToken = localStorage.getItem("accessToken")
+    const orderId = Math.floor(Math.random()*1000000)
+    const order_date = new Date()
+    const date  = order_date.toISOString().split("T")[0]
+    const orders = JSON.stringify(cartItems)
     if(!user) {
       router.push('/login')
     } else {
-      console.log(cartItems)
-      console.log(cost)
-      alert("functions of payment and stuff")
-      handleEmptyCart()
+
+      const status : number = await handleCheckout(orderId,accessToken,date,orders,cost)
+      if(status === 200) {
+        alert("Items Ordered")
+        handleEmptyCart()
+      } else {
+        alert("Something went wrong")
+      }
+
+      // cartItems.map(async ({productId,quantity})=>{
+      //   const order = {
+      //     orderId,
+      //     productId,
+      //     accessToken,
+      //     order_date,
+      //     quantity
+      //   } 
+      
+      // console.log(status)
+      // })
+     
     }
     
   }
+
 
   return (
     <div>

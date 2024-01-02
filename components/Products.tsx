@@ -1,5 +1,5 @@
 "use client"
-import { UserAuth } from "@/app/context/AuthContext"
+import { useUserAuth } from "@/app/context/AuthContext"
 import { useEffect, useState } from "react"
 
 interface Product {
@@ -17,7 +17,7 @@ interface CartItem {
     quantity : number
 }
 export default  function Products() {
-    const {setCartItemNumber}= UserAuth()
+    const {setCartItemNumber}= useUserAuth()
     const [cart,setCart] = useState<CartItem[] | []>([]) 
     const [cartUpdate, setCartUpdate] = useState(false);
     const [products, setProducts] = useState<Product[] | []>([]);
@@ -53,10 +53,12 @@ export default  function Products() {
             if (cart.length === 0) {
                 if(oldCart) {    
                     setCart(JSON.parse(oldCart))
-                    setCartItemNumber(oldCart.length)
+                    setCartItemNumber(JSON.parse(oldCart).length)
                 } 
             } else {
+
                 localStorage.setItem("cart",JSON.stringify(cart))
+                
                 setCartItemNumber(cart.length)
             }
             

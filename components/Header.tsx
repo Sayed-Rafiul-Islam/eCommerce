@@ -1,10 +1,11 @@
 "use client"
 
-import { UserAuth } from '@/app/context/AuthContext'
+import { useUserAuth } from '@/app/context/AuthContext'
 import Link from 'next/link'
 
 export default function Navbar() { 
-    const {user,logout,cartItemNumber} = UserAuth()
+    const {user,logout,cartItemNumber} = useUserAuth()
+
     // console.log(cartItemNumber)
   return (
     <div className='mt-5'>

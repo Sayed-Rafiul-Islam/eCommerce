@@ -1,11 +1,11 @@
 "use client"
-import { UserAuth } from "@/app/context/AuthContext"
+import { useUserAuth } from "@/app/context/AuthContext"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 export default function LogInForm() {
-    const {login} = UserAuth()
+    const {login} = useUserAuth()
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
